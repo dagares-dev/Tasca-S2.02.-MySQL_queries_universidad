@@ -88,7 +88,7 @@ WHERE asignatura.id IS NULL;
 -- 14. Retorna un llistat amb les assignatures que no tenen un professor/a assignat. (id, nombre)
 SELECT asignatura.id, asignatura.nombre
 FROM asignatura LEFT JOIN profesor ON asignatura.id_profesor = profesor.id_profesor
-WHERE profesor.id_profesor IS NULL
+WHERE profesor.id_profesor IS NULL;
 
 -- 15. Retorna un llistat amb tots els departaments que no han impartit assignatures en cap curs escolar. (nombre)
 SELECT DISTINCT departamento.nombre
