@@ -63,15 +63,17 @@ WHERE curso_escolar.anyo_inicio = 2018 AND curso_escolar.anyo_fin = 2019;
 -- Resol les 6 següents consultes utilitzant les clàusules LEFT JOIN i RIGHT JOIN.
 -- 10. Retorna un llistat amb els noms de tots els professors/es i els departaments que tenen vinculats. El llistat també ha de mostrar aquells professors/es que no tenen cap departament associat. El llistat ha de retornar quatre columnes, nom del departament, primer cognom, segon cognom i nom del professor/a. El resultat estarà ordenat alfabèticament de menor a major pel nom del departament, cognoms i el nom. (departamento, apellido1, apellido2, nombre)
 SELECT departamento.nombre AS departamento, persona.apellido1, persona.apellido2, persona.nombre
-FROM profesor
-JOIN persona ON profesor.id_profesor = persona.id LEFT JOIN departamento ON profesor.id_departamento = departamento.id
+FROM persona
+LEFT JOIN profesor ON persona.id = profesor.id_profesor LEFT JOIN departamento ON profesor.id_departamento = departamento.id
+WHERE persona.tipo = 'profesor'
 ORDER BY departamento.nombre, persona.apellido1, persona.apellido2, persona.nombre;
 
 -- 11. Retorna un llistat amb els professors/es que no estan associats a un departament. (apellido1, apellido2, nombre)
 SELECT persona.apellido1, persona.apellido2, persona.nombre
-FROM profesor
-JOIN persona ON profesor.id_profesor = persona.id LEFT JOIN departamento ON profesor.id_departamento = departamento.id
-WHERE departamento.id IS NULL; 
+FROM persona
+LEFT JOIN profesor ON persona.id = profesor.id_profesor
+WHERE persona.tipo = 'profesor' 
+AND profesor.id_profesor IS NULL;
 
 -- 12. Retorna un llistat amb els departaments que no tenen professors/es associats. (nombre)
 SELECT departamento.nombre
@@ -97,7 +99,9 @@ LEFT JOIN profesor ON departamento.id = profesor.id_departamento
 LEFT JOIN asignatura ON profesor.id_profesor = asignatura.id_profesor
 LEFT JOIN alumno_se_matricula_asignatura ON asignatura.id = alumno_se_matricula_asignatura.id_asignatura
 LEFT JOIN curso_escolar ON alumno_se_matricula_asignatura.id_curso_escolar = curso_escolar.id
-WHERE curso_escolar.id IS NULL;
+GROUP BY departamento.id, departamento.nombre
+HAVING COUNT(curso_escolar.id) = 0
+ORDER BY departamento.nombre;
 
 -- 16. Retorna el nombre total d'alumnes que hi ha. (total)
 SELECT COUNT(*) AS total
